@@ -1,5 +1,5 @@
 import tensorflow as tf
-import ModelFunctions
+# import ModelFunctions
 from tensorflow.keras import layers as L
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import MobileNetV2
@@ -17,20 +17,14 @@ def build_model(input_shape):
         input_tensor=inputs,
         alpha=0.75
     )
-    # backbone.summary()
 
 
     x = backbone.output
-    # x = backbone.get_layer("block_13_expand_relu").output
-    x = L.Conv2D(256,kernel_size=1,padding="same")(x)
-    x = L.BatchNormalization()(x)
-    x = L.Activation("relu")(x)
-    x = L.GlobalAveragePooling2D()(x)
+    x = L.Conv2D(256,kernel_size=1,padding="same", activation='relu')(x)
+    x = L.Flatten()(x)
     x = L.Dropout(0.5)(x)
     x = L.Dense(4)(x)
-    # print(x.shape)
 
-    #add the output layer to have 5 in which the 5th output would be how close the predicted bounding box has the object located in the center
 
     model = Model(inputs, x)
     return model
@@ -40,16 +34,12 @@ if __name__ == "__main__":
     model = build_model(input_shape)
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.MeanSquaredError())
     model.summary()
+    tf.keras.utils.plot_model(model,to_file="moble_net_model.png")
     (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.load_data()
     
-    # checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_bounding_box_model.hs", save_best_only = True) callbacks = [checkpoint_cb]
-    history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels))
+    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_bounding_box_model.hs", save_best_only = True)
+    history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
     pd.DataFrame(history.history).plot()
     plt.show()
     plt.savefig("loss_graph_preSet")
-    # model = tf.keras.model.load_model("my_keras_model.hs")
-
-    # history = model.fit(training_data, training_labels, epochs=250, validation_data= (validation_data, validation_labels))
-
-
-    # tf.keras.utils.plot_model(model)
+   

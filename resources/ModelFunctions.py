@@ -14,7 +14,7 @@ def load_data():
     images = []
     bboxes = []
     # open the file and start reading the data in there and saving it to variables
-    ofile = open("../archive/bbox.csv")
+    ofile = open("./archive/bbox.csv")
     ofile.readline()
     print("Starting to load data")
     for line in ofile:
@@ -24,7 +24,7 @@ def load_data():
         x2 = int(bboxdata[3])
         y2 = int(bboxdata[4])
         imgName = bboxdata[0]
-        imgPath = "../archive/images/" + imgName
+        imgPath = "./archive/images/" + imgName
         image = cv.imread(imgPath)
         # get the size of the image. Resize the image. Make the bounding box numbers => {0,1}
         H, W, C = image.shape

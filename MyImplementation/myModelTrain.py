@@ -39,13 +39,10 @@ model = keras.Sequential([
 
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.MeanSquaredError())
 model.summary()
+# tf.keras.utils.plot_model(model,to_file="my_model.png")
 
-# checkpoint_cb = keras.callbacks.ModelCheckpoint("my_bounding_box_model", save_best_only = True) callbacks = [checkpoint_cb]
-history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels))
+checkpoint_cb = keras.callbacks.ModelCheckpoint("my_bounding_box_model", save_best_only = True)
+history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
 pd.DataFrame(history.history).plot()
 plt.show()
 plt.savefig("loss_graph_myModel")
-# model = keras.model.load_model("my_keras_model.hs")
-
-# history = model.fit(training_data, training_labels, epochs=250, validation_data= (validation_data, validation_labels))
-
