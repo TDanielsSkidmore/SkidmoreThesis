@@ -3,6 +3,8 @@ import ModelFunctions
 from tensorflow.keras import layers as L
 from tensorflow.keras.models import Model
 from tensorflow.keras.applications import MobileNetV2
+import matplotlib.pyplot as plt
+import pandas as pd
 
 def build_model(input_shape):
     inputs= L.Input(input_shape)
@@ -40,8 +42,11 @@ if __name__ == "__main__":
     model.summary()
     (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.load_data()
     
-    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_bounding_box_model.hs", save_best_only = True)
-    history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels), callbacks = [checkpoint_cb])
+    # checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_bounding_box_model.hs", save_best_only = True) callbacks = [checkpoint_cb]
+    history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels))
+    pd.DataFrame(history.history).plot()
+    plt.show()
+    plt.savefig("loss_graph_preSet")
     # model = tf.keras.model.load_model("my_keras_model.hs")
 
     # history = model.fit(training_data, training_labels, epochs=250, validation_data= (validation_data, validation_labels))

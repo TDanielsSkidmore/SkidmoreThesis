@@ -49,10 +49,11 @@ def load_data():
     return (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels)
 
 def IoU(bbox_true, bbox_pred):
-    x1 = max[bbox_true[0], bbox_pred[0]]
-    y1 = max[bbox_true[1], bbox_pred[1]]
-    x2 = max[bbox_true[2], bbox_pred[2]]
-    y2 = max[bbox_true[3], bbox_pred[3]]
+
+    x1 = max(bbox_true[0], bbox_pred[0])
+    y1 = max(bbox_true[1], bbox_pred[1])
+    x2 = max(bbox_true[2], bbox_pred[2])
+    y2 = max(bbox_true[3], bbox_pred[3])
 
     intersection_area = max(0,x2-x1+1) * max(0,y2-y1+1)
 
