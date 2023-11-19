@@ -34,7 +34,7 @@ if __name__ == "__main__":
     model = build_model(input_shape)
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.MeanSquaredError())
     model.summary()
-    tf.keras.utils.plot_model(model,to_file="moble_net_model.png")
+    # tf.keras.utils.plot_model(model,to_file="moble_net_model.png")
     (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.load_data()
     
     checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_bounding_box_model.hs", save_best_only = True)
