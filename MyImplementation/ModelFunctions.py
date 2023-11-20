@@ -167,7 +167,3 @@ def filter_out_zero_labels(images,labels):
             images.pop(random_index)
             zero_count -= 1
     return images,labels
-
-
-
-splitImages()

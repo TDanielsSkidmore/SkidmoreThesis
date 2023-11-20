@@ -33,7 +33,7 @@ model = keras.Sequential([
     tf.keras.layers.Dense(1,activation='sigmoid')
     ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.binary_crossentropy())
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-3), loss=tf.keras.losses.BinaryCrossentropy(from_logits=True))
 model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
