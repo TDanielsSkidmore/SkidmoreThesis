@@ -67,15 +67,17 @@ def IoU(bbox_true, bbox_pred):
     return iou
 
 
-def splitImages(filter_zero_lables=True):
+def splitImages(filter_zero_lables=True, skip_data=0):
      # lists for data and labels
     images = []
     labels = []
-    count = 0
     # open the file and start reading the data in there and saving it to variables
-    ofile = open("./archive/bbox_small.csv")
+    ofile = open("./archive/bbox.csv")
     ofile.readline()
     print("Starting to load data")
+    if skip_data>0:
+        for i in range(skip_data):
+            ofile.readline()
     for line in ofile:
         bboxdata =line.split(",")
         x1_bbox = int(bboxdata[1])
@@ -88,8 +90,8 @@ def splitImages(filter_zero_lables=True):
         H, W, C = image.shape
         segment_dim_height =  math.floor(H/2)
         segment_dim_width = math.floor(W/2)
-        for i in range(segment_dim_height, H ,100):
-            for j in range(segment_dim_width, W, 100) :
+        for i in range(segment_dim_height, H ,300):
+            for j in range(segment_dim_width, W, 300) :
                 temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
 
                 x1 = j - segment_dim_width
@@ -112,31 +114,31 @@ def splitImages(filter_zero_lables=True):
                 images.append(temp_image)
                 labels.append(objectiveness_label)
 
-        segment_dim_height =  math.floor( (3 *H) / 4)
-        segment_dim_width = math.floor( (3 * W) / 4)
-        for i in range(segment_dim_height, H ,100):
-            for j in range(segment_dim_width, W, 100) :
-                temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
+        # segment_dim_height =  math.floor( (3 *H) / 4)
+        # segment_dim_width = math.floor( (3 * W) / 4)
+        # for i in range(segment_dim_height, H ,100):
+        #     for j in range(segment_dim_width, W, 100) :
+        #         temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
 
-                x1 = j - segment_dim_width
-                y1 = i - segment_dim_height
-                x2 = j
-                y2 = i
+        #         x1 = j - segment_dim_width
+        #         y1 = i - segment_dim_height
+        #         x2 = j
+        #         y2 = i
                 
-                x1_intersect = max(x1,x1_bbox)
-                y1_intersect = max(y1,y1_bbox)
-                x2_intersect = min(x2, x2_bbox)
-                y2_intersect = min(y2, y2_bbox)
+        #         x1_intersect = max(x1,x1_bbox)
+        #         y1_intersect = max(y1,y1_bbox)
+        #         x2_intersect = min(x2, x2_bbox)
+        #         y2_intersect = min(y2, y2_bbox)
 
-                if (x1_intersect>x2) or (y1_intersect>y2) or (x2_intersect<x1) or (y2_intersect<y1):
-                    objectiveness_label = 0
-                else:
-                    objectiveness_label = ( (x2_intersect - x1_intersect) * (y2_intersect - y1_intersect) ) / ( (x2_bbox-x1_bbox) * (y2_bbox - y1_bbox) )
+        #         if (x1_intersect>x2) or (y1_intersect>y2) or (x2_intersect<x1) or (y2_intersect<y1):
+        #             objectiveness_label = 0
+        #         else:
+        #             objectiveness_label = ( (x2_intersect - x1_intersect) * (y2_intersect - y1_intersect) ) / ( (x2_bbox-x1_bbox) * (y2_bbox - y1_bbox) )
 
-                temp_image = cv.resize(temp_image, (256,256))
-                temp_image = (temp_image - 127.5) / 127.5
-                images.append(temp_image)
-                labels.append(objectiveness_label)
+        #         temp_image = cv.resize(temp_image, (256,256))
+        #         temp_image = (temp_image - 127.5) / 127.5
+        #         images.append(temp_image)
+        #         labels.append(objectiveness_label)
     if filter_zero_lables:
         images,labels = filter_out_zero_labels(images,labels)
     training_data = np.array(images[:round(len(images)*0.8)])
