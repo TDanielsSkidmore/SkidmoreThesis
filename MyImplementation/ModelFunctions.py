@@ -71,6 +71,7 @@ def splitImages(filter_zero_lables=True):
      # lists for data and labels
     images = []
     labels = []
+    count = 0
     # open the file and start reading the data in there and saving it to variables
     ofile = open("./archive/bbox_small.csv")
     ofile.readline()
@@ -135,10 +136,9 @@ def splitImages(filter_zero_lables=True):
                 temp_image = cv.resize(temp_image, (256,256))
                 temp_image = (temp_image - 127.5) / 127.5
                 images.append(temp_image)
-                labels.append(objectiveness_label)
+                labels.append([objectiveness_label])
     if filter_zero_lables:
         images,labels = filter_out_zero_labels(images,labels)
-
     training_data = np.array(images[:round(len(images)*0.8)])
     training_labels = np.array(labels[:round(len(images)*0.8)])
     testing_data = np.array(images[round(len(images)*0.8):round(len(images)*0.9)])
@@ -157,7 +157,7 @@ def filter_out_zero_labels(images,labels):
             non_zero_count+=1
         else:
             zero_count+=1
-    while non_zero_count <= zero_count:
+    while non_zero_count <= zero_count: 
         random_index = random.randint(0,len(labels))
         if labels[random_index] == 0:
             labels.pop(random_index)
