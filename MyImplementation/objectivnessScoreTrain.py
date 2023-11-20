@@ -33,7 +33,7 @@ model = keras.Sequential([
     tf.keras.layers.Dense(1)
     ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-1), loss=tf.keras.losses.MeanSquaredError())
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2), loss=tf.keras.losses.MeanSquaredError())
 model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
