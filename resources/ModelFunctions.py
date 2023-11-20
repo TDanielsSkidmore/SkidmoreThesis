@@ -47,7 +47,3 @@ def load_data():
     validation_labels = np.array(bboxes[round(len(images)*0.9):])
     print("Finished loading data")
     return (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels)
-
-
-        
-load_data()

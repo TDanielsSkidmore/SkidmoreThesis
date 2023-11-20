@@ -82,7 +82,6 @@ def seeAlldata():
         cv.imshow('test', image)
         cv.waitKey(0)
         cv.destroyAllWindows()
-        
 
 
 
@@ -122,3 +121,16 @@ def seeBoundingBoxes(image,true_bbox,pred_bbox):
     cv.imshow('test', image)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
+def saveBoundingBoxes(image,true_bbox,pred_bbox,path,img_name):
+    x1_true = int(true_bbox[0]*255)
+    y1_true = int(true_bbox[1]*255)
+    x2_true = int(true_bbox[2]*255)
+    y2_true = int(true_bbox[3]*255)
+    x1_pred = int(pred_bbox[0]*255)
+    y1_pred = int(pred_bbox[1]*255)
+    x2_pred = int(pred_bbox[2]*255)
+    y2_pred = int(pred_bbox[3]*255)
+    cv.rectangle(image, (x1_true,y1_true), (x2_true,y2_true), (255,0,0), 5) # this is blue for true
+    cv.rectangle(image, (x1_pred,y1_pred), (x2_pred,y2_pred), (0,255,0), 5) # this is green for pred
+    cv.imwrite(path + img_name +".jpg", image)
