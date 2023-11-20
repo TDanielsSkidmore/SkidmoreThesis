@@ -110,7 +110,7 @@ def splitImages(filter_zero_lables=True):
                 temp_image = cv.resize(temp_image, (256,256))
                 temp_image = (temp_image - 127.5) / 127.5
                 images.append(temp_image)
-                labels.append([objectiveness_label])
+                labels.append(objectiveness_label)
 
         segment_dim_height =  math.floor( (3 *H) / 4)
         segment_dim_width = math.floor( (3 * W) / 4)
@@ -136,7 +136,7 @@ def splitImages(filter_zero_lables=True):
                 temp_image = cv.resize(temp_image, (256,256))
                 temp_image = (temp_image - 127.5) / 127.5
                 images.append(temp_image)
-                labels.append([objectiveness_label])
+                labels.append(objectiveness_label)
     if filter_zero_lables:
         images,labels = filter_out_zero_labels(images,labels)
     training_data = np.array(images[:round(len(images)*0.8)])

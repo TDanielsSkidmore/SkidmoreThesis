@@ -30,10 +30,10 @@ model = keras.Sequential([
     tf.keras.layers.Dense(16, activation='relu'),
     tf.keras.layers.Dropout(0.5),
     tf.keras.layers.Dense(8, activation='relu'),
-    tf.keras.layers.Dense(1,activation='sigmoid')
+    tf.keras.layers.Dense(1)
     ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.1), loss=tf.keras.losses.BinaryCrossentropy())
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-1), loss=tf.keras.losses.MeanSquaredError())
 model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
