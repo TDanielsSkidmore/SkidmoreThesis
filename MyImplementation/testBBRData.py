@@ -91,6 +91,13 @@ This is to see a visual representation of the sliding window approch
 
 """
 
+def seeImageSegemts(images, labels):
+    for i in range(len(images)):
+        print(labels[i])
+        cv.imshow('test', images[i])
+        cv.waitKey(0)
+        cv.destroyAllWindows()
+
 def slidingWindowVisualization():
     ofile = open("./archive/bbox.csv")
     ofile.readline()
