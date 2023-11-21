@@ -39,6 +39,6 @@ model.summary()
 
 checkpoint_cb = keras.callbacks.ModelCheckpoint("objectivness_score_model.hs", save_best_only = True)
 history = model.fit(training_data, training_labels, epochs=100, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
-pd.DataFrame(history.history).plot()
+pd.DataFrame(history.history).plot(ylim=(0, 0.1))
 plt.show()
 plt.savefig("objectivness_score_loss")
