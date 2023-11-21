@@ -88,10 +88,12 @@ def splitImages(filter_zero_lables=True, skip_data=0):
         imgPath = "./archive/images/" + imgName
         image = cv.imread(imgPath)
         H, W, C = image.shape
+        one_sixth_image_height =  math.floor(H/6)
+        one_sixth_image_width =  math.floor(W/6)
         segment_dim_height =  math.floor(H/2)
         segment_dim_width = math.floor(W/2)
-        for i in range(segment_dim_height, H ,300):
-            for j in range(segment_dim_width, W, 300) :
+        for i in range(segment_dim_height, H ,one_sixth_image_height):
+            for j in range(segment_dim_width, W, one_sixth_image_width  ) :
                 temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
 
                 x1 = j - segment_dim_width
