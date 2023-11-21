@@ -5,14 +5,15 @@ import ModelFunctions
 import testBBRData
 
 
-(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages(skip_data=760)
+(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages()
 
-one_data = training_data[0]
-cv.imshow('test', one_data)
-cv.waitKey(0)        
-cv.destroyAllWindows()
+one = testing_data[0]
+two = testing_data[1]
+one = tf.expand_dims(one, axis=0)
+two = tf.expand_dims(one, axis=0)
 model = keras.models.load_model("objectivness_score_model.hs")
-y_pred = model.predict(one_data)
+y_pred = model.predict(one)
+print(y_pred)
 
 
 def seeObjectivenessPrediction(testing_data, testing_labels, model_name = "objectivness_score_model.hs"):
