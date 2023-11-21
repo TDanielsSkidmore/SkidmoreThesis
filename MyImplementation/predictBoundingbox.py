@@ -24,6 +24,7 @@ def IoUMetric(testing_data, testing_labels, model_name = "my_bounding_box_model"
 def seePredBbox(testing_data, testing_labels, model_name = "my_bounding_box_model"):
     model = keras.models.load_model(model_name)
     y_pred = model.predict(testing_data)
+    print(y_pred)
     for i in range(len(testing_data)):
         testBBRData.seeBoundingBoxes(testing_data[i],testing_labels[i],y_pred[i])
 
