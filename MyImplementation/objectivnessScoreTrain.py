@@ -38,7 +38,7 @@ model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
 checkpoint_cb = keras.callbacks.ModelCheckpoint("objectivness_score_model.hs", save_best_only = True)
-history = model.fit(training_data, training_labels, epochs=200, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
+history = model.fit(training_data, training_labels, epochs=50, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
 pd.DataFrame(history.history).plot()
 plt.show()
 plt.savefig("objectivness_score_loss")
