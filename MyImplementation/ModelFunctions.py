@@ -57,7 +57,6 @@ def splitImages(filter_zero_lables=True, skip_data=0):
      # lists for data and labels
     images = []
     labels = []
-    count=0
     # open the file and start reading the data in there and saving it to variables
     ofile = open("./archive/bbox_small.csv")
     ofile.readline()
@@ -66,9 +65,6 @@ def splitImages(filter_zero_lables=True, skip_data=0):
         for i in range(skip_data):
             ofile.readline()
     for line in ofile:
-        if count==75:
-            break
-        count+=1
         bboxdata =line.split(",")
         x1_bbox = int(bboxdata[1])
         y1_bbox = int(bboxdata[2])
