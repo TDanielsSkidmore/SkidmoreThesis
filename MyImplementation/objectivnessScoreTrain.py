@@ -7,7 +7,7 @@ from tensorflow import keras
 import matplotlib.pyplot as plt
 import pandas as pd
 
-(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages()
+(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages(skip_data=700)
 
 model = keras.Sequential([
     tf.keras.layers.Conv2D(24, kernel_size=(3,3), padding='same',activation='relu',
@@ -30,15 +30,15 @@ model = keras.Sequential([
     tf.keras.layers.Dense(16, activation='relu'),
     tf.keras.layers.Dropout(0.5),
     tf.keras.layers.Dense(8, activation='relu'),
-    tf.keras.layers.Dense(1)
+    tf.keras.layers.Dense(2, activation='sigmoid')
     ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2), loss=tf.keras.losses.MeanSquaredError())
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2), loss=tf.keras.losses.BinaryCrossentropy())
 model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
 checkpoint_cb = keras.callbacks.ModelCheckpoint("objectivness_score_model.hs", save_best_only = True)
-history = model.fit(training_data, training_labels, epochs=250, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
+history = model.fit(training_data, training_labels, epochs=100, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
 pd.DataFrame(history.history).plot()
 plt.show()
 plt.savefig("objectivness_score_loss")
