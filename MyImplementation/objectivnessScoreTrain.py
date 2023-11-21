@@ -7,7 +7,7 @@ from tensorflow import keras
 import matplotlib.pyplot as plt
 import pandas as pd
 
-(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages(skip_data=700)
+(training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages()
 
 model = keras.Sequential([
     tf.keras.layers.Conv2D(24, kernel_size=(3,3), padding='same',activation='relu',
@@ -27,13 +27,13 @@ model = keras.Sequential([
     tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
     tf.keras.layers.Flatten(),
     tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(16, activation='relu'),
+    tf.keras.layers.Dense(30, activation='relu'),
     tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(8, activation='relu'),
-    tf.keras.layers.Dense(2, activation='sigmoid')
+    tf.keras.layers.Dense(12, activation='relu'),
+    tf.keras.layers.Dense(1)
     ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2), loss=tf.keras.losses.BinaryCrossentropy())
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-2), loss=tf.keras.losses.MeanSquaredError())
 model.summary()
 # tf.keras.utils.plot_model(model,to_file="my_model.png")
 
