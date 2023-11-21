@@ -9,7 +9,6 @@ Images should be in a list where each image is of type numpy.ndarray
 import cv2 as cv
 import numpy as np
 import math
-import testBBRData
 import random
 
 def load_data():
