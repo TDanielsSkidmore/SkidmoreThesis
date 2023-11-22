@@ -129,7 +129,7 @@ def splitImages(filter_zero_lables=True, skip_data=0):
         #         labels.append(objectiveness_label)
     if filter_zero_lables:
         images,labels = filter_out_zero_labels(images,labels)
-    shuffleData(images,labels)
+    images, labels = shuffleData(images,labels)
     training_data = np.array(images[:round(len(images)*0.8)])
     training_labels = np.array(labels[:round(len(images)*0.8)])
     testing_data = np.array(images[round(len(images)*0.8):round(len(images)*0.9)])
@@ -172,12 +172,14 @@ def IoU(bbox_true, bbox_pred):
     return iou
 
 def shuffleData(list_data,list_labels):
-    for i in range(5*len(list_data)):
-        rand1 = random.randint(0,len(list_data)-1)
-        rand2 = random.randint(0,len(list_data)-1)
-        randvalue = list_data[rand1]
-        list_data[rand1] = list_data[rand2]
-        list_data[rand2] = randvalue
-        randlabel = list_labels[rand1]
-        list_labels[rand1] = list_labels[rand2]
-        list_labels[rand2] = randlabel
+    listOfIndexes = []
+    dataToReturn = []
+    labelsToReturn = []
+    for i in range(len(list_data)):
+        listOfIndexes.append(i)
+    for i in range(len(list_data)):
+        randIndex = random.randint(0,len(listOfIndexes)-1)
+        randNum = listOfIndexes.pop(randIndex)
+        dataToReturn.append(list_data[randNum])
+        labelsToReturn.append(list_labels[randNum])
+    return dataToReturn, labelsToReturn
