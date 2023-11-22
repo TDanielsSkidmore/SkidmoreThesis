@@ -11,7 +11,9 @@ import testBBRData
 
 def seeObjectivenessPrediction(testing_data, testing_labels, model_name = "objectivness_score_model.hs"):
     model = keras.models.load_model(model_name)
+    print(len(testing_data))
     y_pred = model.predict(testing_data)
+    print(len(y_pred))
     print(y_pred)
     for i in range(len(testing_data)):
         print("Predicted value is: "+str(y_pred[i])+" and true value is: "+str(testing_labels[i]))
