@@ -11,6 +11,7 @@ import numpy as np
 import math
 import random
 import tensorflow as tf
+import copy
 
 def load_data():
     # lists for data and labels
@@ -78,34 +79,8 @@ def splitImages(filter_zero_lables=True, skip_data=0):
         one_sixth_image_width =  math.floor(W/6)
         segment_dim_height =  math.floor(H/2)
         segment_dim_width = math.floor(W/2)
-        # for i in range(segment_dim_height, H ,one_sixth_image_height):
-        #     for j in range(segment_dim_width, W, one_sixth_image_width  ) :
-        #         temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
-
-        #         x1 = j - segment_dim_width
-        #         y1 = i - segment_dim_height
-        #         x2 = j
-        #         y2 = i
-                
-        #         x1_intersect = max(x1,x1_bbox)
-        #         y1_intersect = max(y1,y1_bbox)
-        #         x2_intersect = min(x2, x2_bbox)
-        #         y2_intersect = min(y2, y2_bbox)
-
-        #         if (x1_intersect>x2) or (y1_intersect>y2) or (x2_intersect<x1) or (y2_intersect<y1):
-        #             objectiveness_label = 0
-        #         else:
-        #             objectiveness_label = ( (x2_intersect - x1_intersect) * (y2_intersect - y1_intersect) ) / ( (x2_bbox-x1_bbox) * (y2_bbox - y1_bbox) )
-
-        #         temp_image = cv.resize(temp_image, (256,256))
-        #         temp_image = (temp_image - 127.5) / 127.5
-        #         images.append(temp_image)
-        #         labels.append(objectiveness_label)
-
-        segment_dim_height =  math.floor( (3 *H) / 4)
-        segment_dim_width = math.floor( (3 * W) / 4)
         for i in range(segment_dim_height, H ,one_sixth_image_height):
-            for j in range(segment_dim_width, W, one_sixth_image_width) :
+            for j in range(segment_dim_width, W, one_sixth_image_width  ) :
                 temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
 
                 x1 = j - segment_dim_width
@@ -127,8 +102,34 @@ def splitImages(filter_zero_lables=True, skip_data=0):
                 temp_image = (temp_image - 127.5) / 127.5
                 images.append(temp_image)
                 labels.append(objectiveness_label)
+
+        # segment_dim_height =  math.floor( (3 *H) / 4)
+        # segment_dim_width = math.floor( (3 * W) / 4)
+        # for i in range(segment_dim_height, H ,one_sixth_image_height):
+        #     for j in range(segment_dim_width, W, one_sixth_image_width) :
+        #         temp_image = image[i-segment_dim_height:i,j-segment_dim_width:j]
+
+        #         x1 = j - segment_dim_width
+        #         y1 = i - segment_dim_height
+        #         x2 = j
+        #         y2 = i
+                
+        #         x1_intersect = max(x1,x1_bbox)
+        #         y1_intersect = max(y1,y1_bbox)
+        #         x2_intersect = min(x2, x2_bbox)
+        #         y2_intersect = min(y2, y2_bbox)
+
+        #         if (x1_intersect>x2) or (y1_intersect>y2) or (x2_intersect<x1) or (y2_intersect<y1):
+        #             objectiveness_label = 0
+        #         else:
+        #             objectiveness_label = ( (x2_intersect - x1_intersect) * (y2_intersect - y1_intersect) ) / ( (x2_bbox-x1_bbox) * (y2_bbox - y1_bbox) )
+
+        #         temp_image = cv.resize(temp_image, (256,256))
+        #         temp_image = (temp_image - 127.5) / 127.5
+        #         images.append(temp_image)
+        #         labels.append(objectiveness_label)
     if filter_zero_lables:
-        images,labels = filter_out_zero_labels(images,labels)
+        images,labels = filter_data(images,labels)
     images, labels = shuffleData(images,labels)
     training_data = np.array(images[:round(len(images)*0.8)])
     training_labels = np.array(labels[:round(len(images)*0.8)])
@@ -140,22 +141,27 @@ def splitImages(filter_zero_lables=True, skip_data=0):
     return (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels)
 
 
-def filter_out_zero_labels(images,labels):
-    non_zero_count = 0
-    zero_count = 0
-    for label in labels:
-        if label!=0:
-            non_zero_count+=1
+def filter_data(images,labels):
+    distribution = [0,0,0,0,0,0,0,0,0,0,0]
+    for i in range(len(labels)):
+        amount = round(labels[i]*10)
+        distribution[amount]+=1
+    distributionSorted = copy.deepcopy(distribution)
+    distributionSorted.sort()
+    medianAmount = distributionSorted[4]
+    labelsToReturn = []
+    imagesToReturn = []
+    for i in range(len(images)):
+        amount = round(labels[i]*10)
+        if distribution[amount] > medianAmount:
+            distribution[amount]-=1
         else:
-            zero_count+=1
-    while non_zero_count <= zero_count: 
-        random_index = random.randint(0,len(labels))
-        if labels[random_index] == 0:
-            labels.pop(random_index)
-            images.pop(random_index)
-            zero_count -= 1
-    return images,labels
+            labelsToReturn.append(labels[i])
+            imagesToReturn.append(images[i])
+    print(distribution)
+    return imagesToReturn,labelsToReturn
 
+        
 def IoU(bbox_true, bbox_pred):
 
     x1 = max(bbox_true[0], bbox_pred[0])
