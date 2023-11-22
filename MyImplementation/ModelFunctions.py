@@ -131,11 +131,13 @@ def filter_data(images,labels):
     imagesToReturn = []
     for i in range(len(images)):
         amount = round(labels[i]*10)
-        if distribution[amount] > medianAmount:
-            distribution[amount]-=1
-        else:
-            labelsToReturn.append(labels[i])
-            imagesToReturn.append(images[i])
+        if amount != 2 and amount != 3 and amount != 4 and amount != 5 and amount != 6 and amount != 7 and amount != 8:
+            if distribution[amount] > medianAmount:
+                distribution[amount]-=1
+            else:
+                labelsToReturn.append(labels[i])
+                imagesToReturn.append(images[i])
+    print(len(imagesToReturn))
     return imagesToReturn,labelsToReturn
 
         
