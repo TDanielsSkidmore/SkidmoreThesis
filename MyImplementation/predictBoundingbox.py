@@ -33,8 +33,8 @@ def seePredBbox(testing_data, testing_labels, model_name = "my_bounding_box_mode
 
 
 print("For my model")
-# IoUMetric(testing_data, testing_labels)
-seePredBbox(testing_data, testing_labels, model_name="MobileNet_bounding_box_model.hs")
+IoUMetric(testing_data, testing_labels)
+# seePredBbox(testing_data, testing_labels, model_name="MobileNet_bounding_box_model.hs")
 print("For pre-set model")
 # model_name="resources/MobileNet_bounding_box_model.hs"
-# IoUMetric(testing_data, testing_labels)
+IoUMetric(testing_data, testing_labels,model_name="MobileNet_bounding_box_model.hs")
