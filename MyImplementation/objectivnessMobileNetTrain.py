@@ -37,9 +37,9 @@ if __name__ == "__main__":
     # tf.keras.utils.plot_model(model,to_file="moble_net_model.png")
     (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.splitImages()
     
-    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_objectiveness_model.hs", save_best_only = True)
+    checkpoint_cb = tf.keras.callbacks.ModelCheckpoint("MobileNet_objectiveness_model_full_distributed_data.hs", save_best_only = True)
     history = model.fit(training_data, training_labels, epochs=500, validation_data= (validation_data, validation_labels),callbacks = [checkpoint_cb])
     pd.DataFrame(history.history).plot(ylim=(0, 0.1))
     plt.show()
-    plt.savefig("loss_objectiveness_graph_MobileNet.png")
+    plt.savefig("loss_objectiveness_graph_MobileNet_full_distributed_data.png")
    

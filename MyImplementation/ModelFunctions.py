@@ -126,35 +126,47 @@ def filter_data(images,labels):
         distribution[amount]+=1
     distributionSorted = copy.deepcopy(distribution)
     distributionSorted.sort()
-    medianAmount = distributionSorted[3]
+    medianAmount = distributionSorted[4]
     labelsToReturn = []
     imagesToReturn = []
     for i in range(len(images)):
         amount = round(labels[i]*10)
-        if amount != 2 and amount != 3 and amount != 4 and amount != 5 and amount != 6 and amount != 7 and amount != 8:
-            if distribution[amount] > medianAmount:
-                distribution[amount]-=1
-            else:
-                labelsToReturn.append(labels[i])
-                imagesToReturn.append(images[i])
+        if distribution[amount] > medianAmount:
+            distribution[amount]-=1
+        else:
+            labelsToReturn.append(labels[i])
+            imagesToReturn.append(images[i])
     print(len(imagesToReturn))
     return imagesToReturn,labelsToReturn
 
         
 def IoU(bbox_true, bbox_pred):
 
-    x1 = max(bbox_true[0], bbox_pred[0])
-    y1 = max(bbox_true[1], bbox_pred[1])
-    x2 = max(bbox_true[2], bbox_pred[2])
-    y2 = max(bbox_true[3], bbox_pred[3])
+    x1_true = bbox_true[0]
+    y1_true = bbox_true[1]
+    x2_true = bbox_true[2]
+    y2_true = bbox_true[3]
 
-    intersection_area = max(0,x2-x1+1) * max(0,y2-y1+1)
+    x1_pred = bbox_pred[0]
+    y1_pred = bbox_pred[1]
+    x2_pred = bbox_pred[2]
+    y2_pred = bbox_pred[3]
 
-    true_area = (bbox_true[2] - bbox_true[0]+1) * (bbox_true[3] - bbox_true[1] +1)
-    bbox_area = (bbox_pred[2] - bbox_pred[0]+1) * (bbox_pred[3] - bbox_pred[1] +1)
 
-    iou = intersection_area / float(true_area + bbox_area - intersection_area)
-    return iou
+    x1_intersect = max(x1_true,x1_pred)
+    y1_intersect = max(y1_true,y1_pred)
+    x2_intersect = min(x2_true,x2_pred)
+    y2_intersect = min(y2_true,y2_pred)
+
+
+    if (x1_intersect>x2_true) or (y1_intersect>y2_true) or (x2_intersect<x1_true) or (y2_intersect<y1_true):
+        intersection = 0
+    else:
+        intersection = ( (x2_intersect - x1_intersect) * (y2_intersect - y1_intersect) )
+    union = ( (x2_true - x1_true) * (y2_true - y1_true) + (x2_pred - x1_pred) * (y2_pred - y1_pred) - intersection)
+    return intersection / union
+
+
 # - objectiveness score
 def shuffleData(list_data,list_labels):
     listOfIndexes = []
