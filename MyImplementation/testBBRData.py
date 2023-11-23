@@ -6,6 +6,9 @@ The second is to visualize the image with its corresponding bbox
 """
 
 import cv2 as cv
+import random
+import copy
+import ModelFunctions
 
 def getImageInfor():
     ofile = open("./archive/bbox.csv")
@@ -129,15 +132,44 @@ def seeBoundingBoxes(image,true_bbox,pred_bbox):
     cv.waitKey(0)
     cv.destroyAllWindows()
 
-def saveBoundingBoxes(image,true_bbox,pred_bbox,path,img_name):
-    x1_true = int(true_bbox[0]*255)
-    y1_true = int(true_bbox[1]*255)
-    x2_true = int(true_bbox[2]*255)
-    y2_true = int(true_bbox[3]*255)
-    x1_pred = int(pred_bbox[0]*255)
-    y1_pred = int(pred_bbox[1]*255)
-    x2_pred = int(pred_bbox[2]*255)
-    y2_pred = int(pred_bbox[3]*255)
-    cv.rectangle(image, (x1_true,y1_true), (x2_true,y2_true), (255,0,0), 5) # this is blue for true
-    cv.rectangle(image, (x1_pred,y1_pred), (x2_pred,y2_pred), (0,255,0), 5) # this is green for pred
+def saveBoundingBoxes(image,bboxes,path,img_name):
+    image = copy.deepcopy(image)
+    for i in range(len(bboxes)):
+        bbox = bboxes[i]
+        x1 = int(bbox[0])
+        y1 = int(bbox[1])
+        x2 = int(bbox[2])
+        y2 = int(bbox[3])
+        randColor1 = random.randrange(0,255)
+        randColor2 = random.randrange(0,255)
+        randColor3 = random.randrange(0,255)
+        cv.rectangle(image, (x1,y1), (x2,y2), (randColor1,randColor2,randColor3), 5) # this is blue for true
     cv.imwrite(path + img_name +".jpg", image)
+
+
+def showBoundingBoxes(image,bboxes):
+    image = copy.deepcopy(image)
+    for i in range(len(bboxes)):
+        bbox = bboxes[i]
+        x1 = int(bbox[0])
+        y1 = int(bbox[1])
+        x2 = int(bbox[2])
+        y2 = int(bbox[3])
+        randColor1 = random.randrange(0,255)
+        randColor2 = random.randrange(0,255)
+        randColor3 = random.randrange(0,255)
+        cv.rectangle(image, (x1,y1), (x2,y2), (randColor1,randColor2,randColor3), 5) # this is blue for true
+    cv.imshow('test', image)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+def showBoundingBox(image,bbox):
+    image = copy.deepcopy(image)
+    x1 = int(bbox[0])
+    y1 = int(bbox[1])
+    x2 = int(bbox[2])
+    y2 = int(bbox[3])
+    cv.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 5)
+    cv.imshow('test', image)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
