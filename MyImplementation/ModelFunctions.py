@@ -128,7 +128,7 @@ def filter_data(images,labels):
     print(distribution)
     distributionSorted = copy.deepcopy(distribution)
     distributionSorted.sort()
-    medianAmount = distributionSorted[4]
+    medianAmount = distributionSorted[5]
     labelsToReturn = []
     imagesToReturn = []
     for i in range(len(images)):
@@ -274,45 +274,48 @@ def splitImagesWithBoundingBox(filter_zero_lables=True, skip_data=0):
         imgPath = "./archive/images/" + imgName
         image = cv.imread(imgPath)
         H, W, C = image.shape
-        one_sixth_image_height =  math.floor(H/6)
-        one_sixth_image_width =  math.floor(W/6)
-        segmentSize = min(math.floor(H/2),math.floor(W/2))
+        one_sixth_image_height =  math.floor(H/8)
+        one_sixth_image_width =  math.floor(W/8)
+        segmentSize = min(math.floor(H/1.5),math.floor(W/1.5))
+        segmentLocation = []
+        image_segments = []
         for i in range(segmentSize, H ,one_sixth_image_height):
             for j in range(segmentSize, W, one_sixth_image_width  ) :
                 temp_image = copy.deepcopy(image[i-segmentSize:i,j-segmentSize:j])
 
                 temp_image = cv.resize(temp_image, (256,256))
                 temp_image = (temp_image - 127.5) / 127.5
-                temp_image = np.expand_dims(temp_image, axis=0)
 
-                boundingBoxModel = keras.models.load_model("MobileNet_bounding_box_model.hs")
-                predictedBoundingBox = boundingBoxModel.predict(temp_image)[0]
+                segmentLocation.append( (j - segmentSize,i - segmentSize ) )
+                image_segments.append(temp_image)
+
+        boundingBoxModel = keras.models.load_model("MobileNet_bounding_box_model.hs")
+        predictedBoundingBoxes = boundingBoxModel.predict(np.array(image_segments))
+
+        for i in range(len(predictedBoundingBoxes)):
+
+            x1_segment = predictedBoundingBoxes[i][0] * 255
+            y1_segment = predictedBoundingBoxes[i][1] * 255
+            x2_segment = predictedBoundingBoxes[i][2] * 255
+            y2_segment = predictedBoundingBoxes[i][3] * 255
 
 
+            for row in range(len(image_segments[i])):
+                for column in range(len(image_segments[i][0])):
+                    if column < x1_segment or row < y1_segment or column > x2_segment or row > y2_segment:
+                        image_segments[i][row][column] = [0,0,0]
 
-                x1_segment = predictedBoundingBox[0] * 255
-                y1_segment = predictedBoundingBox[1] * 255
-                x2_segment = predictedBoundingBox[2] * 255
-                y2_segment = predictedBoundingBox[3] * 255
+            predictedBoundingBox = relocateBbox(predictedBoundingBoxes[i],[segmentSize,segmentLocation[i][0],segmentLocation[i][1]])
+            #coordinates of segment
+            x1_fullimg = predictedBoundingBox[0]
+            y1_fullimg = predictedBoundingBox[1]
+            x2_fullimg = predictedBoundingBox[2]
+            y2_fullimg = predictedBoundingBox[3]
 
-
-                for row in range(len(temp_image[0])):
-                    for column in range(len(temp_image[0][0])):
-                        if column < x1_segment or row < y1_segment or column > x2_segment or row > y2_segment:
-                            temp_image[0][row][column] = [0,0,0]
-
-                predictedBoundingBox = relocateBbox(predictedBoundingBox,[segmentSize,j - segmentSize,i - segmentSize])
-                #coordinates of segment
-                x1_fullimg = predictedBoundingBox[0]
-                y1_fullimg = predictedBoundingBox[1]
-                x2_fullimg = predictedBoundingBox[2]
-                y2_fullimg = predictedBoundingBox[3]
-
-                
-                objectiveness_label = IoU([x1_bbox,y1_bbox,x2_bbox,y2_bbox],[x1_fullimg,y1_fullimg,x2_fullimg,y2_fullimg])
-
-                images.append(temp_image[0])
-                labels.append(objectiveness_label)
+            
+            objectiveness_label = IoU([x1_bbox,y1_bbox,x2_bbox,y2_bbox],[x1_fullimg,y1_fullimg,x2_fullimg,y2_fullimg])
+            labels.append(objectiveness_label)
+            images.append(image_segments[i])
     # The data is biased toward some lables depending on the size of the segment, this gets rid of the bias in the data
     if filter_zero_lables:
         images,labels = filter_data(images,labels)
