@@ -9,7 +9,7 @@ import testBBRData
 
 
 # - objectiveness score - make prediction for the test data (I am skipping most of the data so I can load it locally, all is actually part of validation (within 90% of data))
-def seeObjectivenessPrediction(testing_data, testing_labels, model_name = "MobileNet_objectiveness_model_full_distributed_data.hs"):
+def seeObjectivenessPrediction(testing_data, testing_labels, model_name = "MobileNet_myobjectiveness_score_model.hs"):
     model = keras.models.load_model(model_name)
     y_pred = model.predict(testing_data)
     distance = 0
