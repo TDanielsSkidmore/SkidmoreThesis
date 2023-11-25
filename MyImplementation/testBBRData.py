@@ -143,7 +143,7 @@ def saveBoundingBoxes(image,bboxes,path,img_name):
         randColor1 = random.randrange(0,255)
         randColor2 = random.randrange(0,255)
         randColor3 = random.randrange(0,255)
-        cv.rectangle(image, (x1,y1), (x2,y2), (randColor1,randColor2,randColor3), 5) # this is blue for true
+        cv.rectangle(image, (x1,y1), (x2,y2), (randColor1,randColor2,randColor3), 15) # this is blue for true
     cv.imwrite(path + img_name +".jpg", image)
 
 

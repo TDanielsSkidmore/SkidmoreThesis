@@ -52,7 +52,7 @@ def multiObjDetectionInImageWMyObjectivnessScore(objThreshold, iouThreshold, ima
 
 
 
-def multiObjectDetectionWMyObjScore(fileName, path = "./multi_person_images/", objThreshold = 0.7, overlapThreshold = 0.2):
+def multiObjectDetectionWMyObjScore(fileName, path = "./multi_person_images/", objThreshold = 0.5, overlapThreshold = 0.2):
     ofile = open(fileName)
     images = []
     bboxSet = []
