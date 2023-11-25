@@ -228,27 +228,29 @@ def segmentImage(image):
 
 def slidefilter(image, images, segmentQuoiant,segmentCoordinates):
     H, W, C = image.shape
-    segmentSize = min(math.floor(H/segmentQuoiant),math.floor(W/segmentQuoiant))
-    for i in range(segmentSize, H ,75):
-        for j in range(segmentSize, W, 75) :
-            temp_image = image[i-segmentSize:i,j-segmentSize:j]
+    segmentHeight = math.floor(H/segmentQuoiant)
+    segmentWidth = math.floor(W/segmentQuoiant)
+    for i in range(segmentHeight, H ,75):
+        for j in range(segmentWidth, W, 75) :
+            temp_image = image[i-segmentHeight:i,j-segmentWidth:j]
             temp_image = cv.resize(temp_image, (256,256))
             temp_image = (temp_image - 127.5) / 127.5
             images.append(temp_image)
 
             segmentCoordinate = []
-            segmentCoordinate.append(segmentSize)
-            segmentCoordinate.append(j - segmentSize)
-            segmentCoordinate.append(i - segmentSize)
+            segmentCoordinate.append( (segmentHeight,segmentWidth) )
+            segmentCoordinate.append(j - segmentWidth)
+            segmentCoordinate.append(i - segmentHeight)
             segmentCoordinates.append(segmentCoordinate)
     return segmentCoordinates
 
 def relocateBbox(bbox, segmentCoordinates):
-    segmentSize = segmentCoordinates[0]
-    x1 = int(bbox[0]*segmentSize+segmentCoordinates[1])
-    y1 = int(bbox[1]*segmentSize+segmentCoordinates[2])
-    x2 = int(bbox[2]*segmentSize+segmentCoordinates[1])
-    y2 = int(bbox[3]*segmentSize+segmentCoordinates[2])
+    segmentHeight = segmentCoordinates[0][0]
+    segmentWidth = segmentCoordinates[0][1]
+    x1 = int(bbox[0]*segmentWidth+segmentCoordinates[1])
+    y1 = int(bbox[1]*segmentHeight+segmentCoordinates[2])
+    x2 = int(bbox[2]*segmentWidth+segmentCoordinates[1])
+    y2 = int(bbox[3]*segmentHeight+segmentCoordinates[2])
     return [x1,y1,x2,y2]
 
 
