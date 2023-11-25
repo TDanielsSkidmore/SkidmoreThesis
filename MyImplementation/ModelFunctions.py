@@ -217,20 +217,20 @@ def proccessImage(image):
 def segmentImage(image):
     images = []
     segmentCoordinates = []
-    slidefilter(image, images, 1.2, 15,segmentCoordinates)
-    slidefilter(image, images, 1.5, 15,segmentCoordinates)
-    segmentCoordinates = slidefilter(image, images, 2, 15,segmentCoordinates)
-    segmentCoordinates = slidefilter(image, images, 3, 15,segmentCoordinates)
+    slidefilter(image, images, 1.2,segmentCoordinates)
+    slidefilter(image, images, 1.5,segmentCoordinates)
+    slidefilter(image, images, 1.5,segmentCoordinates) 
+    slidefilter(image, images, 2,segmentCoordinates)
+    slidefilter(image, images, 3,segmentCoordinates)
+    slidefilter(image, images, 5, segmentCoordinates)
     return images, segmentCoordinates
 
 
-def slidefilter(image, images, segmentQuoiant, skipQuoiant,segmentCoordinates):
+def slidefilter(image, images, segmentQuoiant,segmentCoordinates):
     H, W, C = image.shape
-    skip_y =  math.floor(H/skipQuoiant)
-    skip_x =  math.floor(W/skipQuoiant)
     segmentSize = min(math.floor(H/segmentQuoiant),math.floor(W/segmentQuoiant))
-    for i in range(segmentSize, H ,skip_y):
-        for j in range(segmentSize, W, skip_x) :
+    for i in range(segmentSize, H ,50):
+        for j in range(segmentSize, W, 50) :
             temp_image = image[i-segmentSize:i,j-segmentSize:j]
             temp_image = cv.resize(temp_image, (256,256))
             temp_image = (temp_image - 127.5) / 127.5
@@ -279,6 +279,7 @@ def splitImagesWithBoundingBox(filter_zero_lables=True, skip_data=0):
         segmentSize = min(math.floor(H/1.5),math.floor(W/1.5))
         segmentLocation = []
         image_segments = []
+
         for i in range(segmentSize, H ,one_sixth_image_height):
             for j in range(segmentSize, W, one_sixth_image_width  ) :
                 temp_image = copy.deepcopy(image[i-segmentSize:i,j-segmentSize:j])
@@ -331,3 +332,20 @@ def splitImagesWithBoundingBox(filter_zero_lables=True, skip_data=0):
     validation_labels = np.array(labels[round(len(images)*0.9):])
     print("Finished loading data")
     return (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels)
+
+
+def filterOutImages(images, bboxes):
+     
+    for i in range(len(bboxes)):
+
+        x1_segment = bboxes[i][0] * 255
+        y1_segment = bboxes[i][1] * 255
+        x2_segment = bboxes[i][2] * 255
+        y2_segment = bboxes[i][3] * 255
+
+
+        for row in range(len(images[i])):
+            for column in range(len(images[i][0])):
+                if column < x1_segment or row < y1_segment or column > x2_segment or row > y2_segment:
+                    images[i][row][column] = [0,0,0]
+    return images
