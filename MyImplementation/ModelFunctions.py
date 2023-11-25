@@ -229,8 +229,8 @@ def segmentImage(image):
 def slidefilter(image, images, segmentQuoiant,segmentCoordinates):
     H, W, C = image.shape
     segmentSize = min(math.floor(H/segmentQuoiant),math.floor(W/segmentQuoiant))
-    for i in range(segmentSize, H ,50):
-        for j in range(segmentSize, W, 50) :
+    for i in range(segmentSize, H ,75):
+        for j in range(segmentSize, W, 75) :
             temp_image = image[i-segmentSize:i,j-segmentSize:j]
             temp_image = cv.resize(temp_image, (256,256))
             temp_image = (temp_image - 127.5) / 127.5
