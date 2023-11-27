@@ -66,6 +66,6 @@ def multiObjectDetectionWMyObjScore(fileName, path = "./multi_person_images/", o
     for i in range(len(images)):
         testBBRData.saveBoundingBoxes(images[i],bboxSet[i],"./multiObjectdetectionResults/set2/","image"+str(i))
 
-fileName = "./multi_person_images/set2/multiPersonImages.txt"
-bboxes = multiObjectDetectionWMyObjScore(fileName,path="./multi_person_images/set2/")
+fileName = "./multi_person_images/multiPersonImages.txt"
+bboxes = multiObjectDetectionWMyObjScore(fileName,path="./multi_person_images/")
 
