@@ -3,6 +3,7 @@ from tensorflow import keras
 import cv2 as cv
 import ModelFunctions
 import testBBRData
+import math
 
 
 (training_data, training_labels), (testing_data, testing_labels), (validation_data, validation_labels) = ModelFunctions.load_data()
@@ -19,7 +20,13 @@ def IoUMetric(testing_data, testing_labels, model_name = "my_bounding_box_model"
             elif y_pred[i][j] < 0:
                 y_pred[i][j] = 0
         average_IoU += ModelFunctions.IoU(testing_labels[i], y_pred[i])
-    print(f'The average intersection over union is {average_IoU/len(y_pred)}')
+    average_IoU/=len(y_pred)
+    standardDeviation = 0
+    for i in range(len(testing_data)):
+        standardDeviation = (ModelFunctions.IoU(testing_labels[i], y_pred[i]) - average_IoU) ** 2
+    standardDeviation/=len(y_pred)
+    standardDeviation = math.sqrt(standardDeviation)
+    print(f'The average intersection over union is {average_IoU} with the Standard deviation of {standardDeviation}')
 
 def seePredBbox(testing_data, testing_labels, model_name = "my_bounding_box_model"):
     model = keras.models.load_model(model_name)
