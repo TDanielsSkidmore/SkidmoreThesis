@@ -1,0 +1,1 @@
+My 2023 Skidmore College Computer Science Thesis on creating a multi-object tracking software which was unanimously accepted by the department. See the "Troy Daniels Thesis.PDF" file for more details.
