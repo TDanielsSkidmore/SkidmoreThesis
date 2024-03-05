@@ -173,3 +173,68 @@ def showBoundingBox(image,bbox):
     cv.imshow('test', image)
     cv.waitKey(0)
     cv.destroyAllWindows()
+
+def showBoundingBoxWithCoordinates(image,bbox, fullimage=True):
+    image = copy.deepcopy(image)
+    x1 = int(bbox[0])
+    y1 = int(bbox[1])
+    x2 = int(bbox[2])
+    y2 = int(bbox[3])
+    H, W, C = image.shape
+    cv.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 3)
+    if fullimage:
+        cv.circle(image, (x1,y1), 10, (0,255,0), 10)
+        cv.circle(image, (x2,y2), 10, (0,255,0), 10)
+        cv.putText(image, f"(X1,Y1): ({x1},{y1})", (0,50), cv.FONT_HERSHEY_SIMPLEX,1, (255,255,255),3)
+        cv.putText(image, f"(X2,Y2): ({x2},{y2})", (0,100), cv.FONT_HERSHEY_SIMPLEX,1, (255,255,255),3)
+    else:
+        cv.putText(image, f"(X1,Y1): ({x1/256},{y1/256})", (0,50), cv.FONT_HERSHEY_SIMPLEX,0.5, (255,255,255),3)
+        cv.putText(image, f"(X2,Y2): ({x2/256},{y2/256})", (0,100), cv.FONT_HERSHEY_SIMPLEX,0.5, (255,255,255),3)
+    cv.imshow('test', image)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+def showBoundingBoxsWithPixelError(image,bbox,pred):
+    image = copy.deepcopy(image)
+    x1 = int(bbox[0])
+    y1 = int(bbox[1])
+    x2 = int(bbox[2])
+    y2 = int(bbox[3])
+
+    x1_pred = int(pred[0])
+    y1_pred = int(pred[1])
+    x2_pred = int(pred[2])
+    y2_pred = int(pred[3])
+
+
+    cv.rectangle(image, (x1,y1), (x2,y2), (0,0,255), 5)
+    cv.rectangle(image, (x1_pred,y1_pred), (x2_pred,y2_pred), (0,255,0), 5)
+    cv.putText(image, f"Ground Truth", (0,0), cv.FONT_HERSHEY_SIMPLEX,1, (0,0,255),3)
+    cv.putText(image, f"Ground Truth", (0,10), cv.FONT_HERSHEY_SIMPLEX,1, (0,255,0),3)
+    cv.imshow('test', image)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+def seeBothBoundingBoxes(image,true_bbox,pred_bbox,mobile):
+    H, W, C = image.shape
+    x1_true = int(true_bbox[0]*W)
+    y1_true = int(true_bbox[1]*H)
+    x2_true = int(true_bbox[2]*W)
+    y2_true = int(true_bbox[3]*H)
+    x1_pred = int(pred_bbox[0]*W)
+    y1_pred = int(pred_bbox[1]*H)
+    x2_pred = int(pred_bbox[2]*W)
+    y2_pred = int(pred_bbox[3]*H)
+    x1_mobile = int(mobile[0]*W)
+    y1_mobile = int(mobile[1]*H)
+    x2_mobile = int(mobile[2]*W)
+    y2_mobile = int(mobile[3]*H)
+    cv.rectangle(image, (x1_true,y1_true), (x2_true,y2_true), (255,0,0), 5) # this is blue for true
+    cv.rectangle(image, (x1_pred,y1_pred), (x2_pred,y2_pred), (0,255,0), 5) # this is green for pred
+    cv.rectangle(image, (x1_mobile,y1_mobile), (x2_mobile,y2_mobile), (0,0,255), 5) # this is green for pred
+    cv.putText(image, f"Ground Truth Bounding Box", (0,0), cv.FONT_HERSHEY_SIMPLEX,1, (255,0,0),3)
+    cv.putText(image, f"My Models Bouning Box", (0,50), cv.FONT_HERSHEY_SIMPLEX,1, (0,255,0),3)
+    cv.putText(image, f"MobileNet Bouning Box", (0,100), cv.FONT_HERSHEY_SIMPLEX,1, (0,0,255),3)
+    cv.imshow('test', image)
+    cv.waitKey(0)
+    cv.destroyAllWindows()

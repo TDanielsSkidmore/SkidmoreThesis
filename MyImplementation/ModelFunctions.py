@@ -102,13 +102,14 @@ def splitImages(filter_zero_lables=True, skip_data=0):
 
                 temp_image = cv.resize(temp_image, (256,256))
                 temp_image = (temp_image - 127.5) / 127.5
+                show_segment = copy.deepcopy(temp_image)
                 images.append(temp_image)
                 labels.append(objectiveness_label)
     # The data is biased toward some lables depending on the size of the segment, this gets rid of the bias in the data
-    if filter_zero_lables:
-        images,labels = filter_data(images,labels)
+    # if filter_zero_lables:
+    #     images,labels = filter_data(images,labels)
     # Simular data are also consecutive in the data, this shuffles it
-    images, labels = shuffleData(images,labels)
+    # images, labels = shuffleData(images,labels)
     # break into train segment and test
     training_data = np.array(images[:round(len(images)*0.8)])
     training_labels = np.array(labels[:round(len(images)*0.8)])
@@ -350,4 +351,12 @@ def filterOutImages(images, bboxes):
             for column in range(len(images[i][0])):
                 if column < x1_segment or row < y1_segment or column > x2_segment or row > y2_segment:
                     images[i][row][column] = [0,0,0]
+    return images
+
+def segementImage(image):
+    images = []
+    images.append(image[:round(len(image)/2),:round(len(image)/2)])
+    images.append(image[round(len(image)/2):,:round(len(image)/2)])
+    images.append(image[:round(len(image)/2),round(len(image)/2):])
+    images.append(image[round(len(image)/2):,round(len(image)/2):])
     return images

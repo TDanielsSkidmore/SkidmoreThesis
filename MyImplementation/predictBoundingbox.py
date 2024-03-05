@@ -35,13 +35,21 @@ def seePredBbox(testing_data, testing_labels, model_name = "my_bounding_box_mode
     for i in range(len(testing_data)):
         testBBRData.seeBoundingBoxes(testing_data[i],testing_labels[i],y_pred[i])
 
+def seeBothModels(testing_data,testing_labels):
+    model = keras.models.load_model("my_bounding_box_model")
+    mobileNet = keras.models.load_model("my_bounding_box_model")
+    y_pred = model.predict(testing_data)
+    y_mobile = mobileNet.predict(testing_data)
+    for i in range(len(testing_data)):
+        testBBRData.seeBothBoundingBoxes(testing_data[i],testing_labels[i],y_pred[i],y_mobile[i])
 
 
 
+seeBothModels(testing_data,testing_labels)
 
-print("For my model")
-IoUMetric(testing_data, testing_labels)
+# print("For my model")
+# IoUMetric(testing_data, testing_labels)
 # seePredBbox(testing_data, testing_labels, model_name="MobileNet_bounding_box_model.hs")
-print("For pre-set model")
-# model_name="resources/MobileNet_bounding_box_model.hs"
-IoUMetric(testing_data, testing_labels,model_name="MobileNet_bounding_box_model.hs")
+# print("For pre-set model")
+# # model_name="resources/MobileNet_bounding_box_model.hs"
+# IoUMetric(testing_data, testing_labels,model_name="MobileNet_bounding_box_model.hs")
